@@ -1,11 +1,3 @@
-// package main
-
-// import "fmt"
-
-// func main() {
-// 	fmt.Println("Hello, Go!")
-// }
-
 package main
 
 import (
@@ -13,14 +5,30 @@ import (
 	"net/http"
 )
 
-type Ping struct {
+// Struct for JSON responses
+type Response struct {
 	Message string `json:"message"`
 }
 
 func main() {
-	http.HandleFunc("/ping", func(w http.ResponseWriter, r *http.Request) {
-		w.Header().Set("Content-Type", "application/json")
-		json.NewEncoder(w).Encode(Ping{Message: "pong"})
-	})
+	// Register endpoints
+	http.HandleFunc("/ping", pingHandler)   // <-- call the function here
+	http.HandleFunc("/hello", helloHandler) // <-- call another function
+
+	// Start the server
 	http.ListenAndServe(":8080", nil)
+}
+
+// Function definitions come after main (or before, both work)
+
+// Handles /ping
+func pingHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(Response{Message: "pong"})
+}
+
+// Handles /hello
+func helloHandler(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Content-Type", "application/json")
+	json.NewEncoder(w).Encode(Response{Message: "Hello, Go!"})
 }
